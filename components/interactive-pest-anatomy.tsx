@@ -77,10 +77,10 @@ export default function InteractivePestAnatomy() {
   const selectedPartData = beetleParts.find((part) => part.id === selectedPart)
 
   return (
-    <section className="py-20 bg-gradient-to-br from-secondary via-background to-secondary/50">
+    <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4 text-accent border-accent">
+          <Badge variant="outline" className="mb-4 text-primary border-primary">
             Interactive Learning Tool
           </Badge>
           <h2 className="text-4xl font-bold text-foreground mb-4">Know Your Enemy: Pest Anatomy</h2>
@@ -162,7 +162,7 @@ export default function InteractivePestAnatomy() {
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className={`p-3 rounded-lg ${selectedPartData.color.split(" ")[0]}`}>
-                      <Bug className="w-5 h-5 text-white" />
+                      <Bug className="w-5 h-5 text-primary" />
                     </div>
                     <CardTitle className="text-xl">{selectedPartData.name}</CardTitle>
                   </div>
@@ -210,11 +210,11 @@ export default function InteractivePestAnatomy() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-4">
               <Card className="text-center p-4 hover:shadow-lg transition-all duration-300">
-                <div className="text-2xl font-bold text-accent">$5B+</div>
+                <div className="text-2xl font-bold text-primary">$5B+</div>
                 <div className="text-sm text-muted-foreground">Annual damage in US</div>
               </Card>
               <Card className="text-center p-4 hover:shadow-lg transition-all duration-300">
-                <div className="text-2xl font-bold text-accent">24/7</div>
+                <div className="text-2xl font-bold text-primary">24/7</div>
                 <div className="text-sm text-muted-foreground">Pests never sleep</div>
               </Card>
             </div>

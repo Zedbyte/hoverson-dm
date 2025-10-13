@@ -161,17 +161,17 @@ export default function HoversonPestControl() {
                 </a>
               </div>
             </div>
-            <div className="relative">
+            {/* <div className="relative">
               <div className="bg-white rounded-2xl p-2 border-4 border-white/20">
                 <Image
-                  src="/pest-control-treatment.png"
+                  src="/images/hoverson-logo.png"
                   alt="Professional Pest Control Service"
                   width={500}
                   height={400}
                   className="rounded-lg"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -591,7 +591,7 @@ export default function HoversonPestControl() {
                 alt="Hoverson Pest Control"
                 width={150}
                 height={50}
-                className="h-12 w-auto brightness-0 invert"
+                className="h-12 w-auto"
               />
               <p className="font-body text-white/80 leading-relaxed">
                 Professional pest control services protecting homes and businesses with reliable, safe solutions.

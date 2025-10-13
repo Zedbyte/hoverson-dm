@@ -5,25 +5,39 @@
 
 /* Strict Hoverson branding palette: #ffffff, #0E61AE, #151248 only - NO gradients */
 :root {
-  --background: #ffffff;
-  --foreground: #151248;
-  --card: #ffffff;
-  --card-foreground: #151248;
-  --popover: #ffffff;
-  --popover-foreground: #151248;
-  --primary: #0e61ae;
-  --primary-foreground: #ffffff;
-  --secondary: #151248;
-  --secondary-foreground: #ffffff;
-  --muted: #f8fafc;
-  --muted-foreground: #151248;
-  --accent: #0e61ae;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0e61ae;
+
+  --brand-white: #ffffff;
+  --brand-primary: #0e61ae;
+  --brand-ink: #151248;
+
+/* Map to the v4 design tokens your components use */
+  --background: var(--brand-white);
+  --foreground: var(--brand-ink);
+
+  --card: var(--brand-white);
+  --card-foreground: var(--brand-ink);
+
+  --popover: var(--brand-white);
+  --popover-foreground: var(--brand-ink);
+
+  --primary: var(--brand-primary);
+  --primary-foreground: var(--brand-white);
+
+  --secondary: color-mix(in oklab, var(--brand-primary) 8%, white); /* subtle tint */
+  --secondary-foreground: var(--brand-ink);
+
+  --muted: color-mix(in oklab, var(--brand-ink) 5%, white);
+  --muted-foreground: color-mix(in oklab, var(--brand-ink) 60%, white);
+
+  --accent: var(--secondary);
+  --accent-foreground: var(--brand-ink);
+
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: white;
+
+  --border: color-mix(in oklab, var(--brand-ink) 12%, white);
+  --input: var(--border);
+  --ring: color-mix(in oklab, var(--brand-primary) 45%, white);
   --radius: 0.5rem;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -41,25 +55,30 @@
 }
 
 .dark {
-  --background: #151248;
-  --foreground: #ffffff;
-  --card: #151248;
-  --card-foreground: #ffffff;
-  --popover: #151248;
-  --popover-foreground: #ffffff;
-  --primary: #ffffff;
-  --primary-foreground: #0e61ae;
-  --secondary: #0e61ae;
-  --secondary-foreground: #ffffff;
-  --muted: #0e61ae;
-  --muted-foreground: #151248;
-  --accent: #0e61ae;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #151248;
-  --input: #151248;
-  --ring: #0e61ae;
+  --background: var(--brand-ink);
+  --foreground: var(--brand-white);
+
+  --card: var(--brand-ink);
+  --card-foreground: var(--brand-white);
+
+  --popover: var(--brand-ink);
+  --popover-foreground: var(--brand-white);
+
+  --primary: var(--brand-white);
+  --primary-foreground: var(--brand-ink);
+
+  --secondary: color-mix(in oklab, var(--brand-ink) 20%, white);
+  --secondary-foreground: var(--brand-white);
+
+  --muted: color-mix(in oklab, var(--brand-ink) 35%, white);
+  --muted-foreground: color-mix(in oklab, white 60%, var(--brand-ink));
+
+  --accent: var(--secondary);
+  --accent-foreground: var(--brand-white);
+
+  --border: color-mix(in oklab, var(--brand-ink) 35%, white);
+  --input: var(--border);
+  --ring: color-mix(in oklab, var(--brand-primary) 25%, var(--brand-ink));
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -114,6 +133,24 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme inline {
+  /* Fonts: read from CSS vars created by next/font/local */
+  --font-sans: var(--font-poppins-regular), system-ui, sans-serif;
+  --font-poppins-regular: var(--font-poppins-regular), system-ui, sans-serif;
+  --font-poppins-semi: var(--font-poppins-semi), system-ui, sans-serif;
+  --font-poppins-bold: var(--font-poppins-bold), system-ui, sans-serif;
+
+  --font-ethnocentric: var(--font-ethnocentric), sans-serif;
+  --font-centurygothic: var(--font-century-gothic), "Century Gothic", "AppleGothic", sans-serif;
+
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -151,4 +188,24 @@
     font-family: "Century Gothic", sans-serif;
     font-weight: 400;
   }
+}
+
+/* ---------- Brand Utilities to match your classnames ---------- */
+@layer utilities {
+  .font-wordmark { font-family: var(--font-ethnocentric); }
+  .font-subtitle { font-family: var(--font-centurygothic); }
+
+  .font-headline { font-family: var(--font-poppins-bold); font-weight: 700; }
+  .font-sub { font-family: var(--font-poppins-semi); font-weight: 600; }
+  .font-body { font-family: var(--font-poppins-regular); font-weight: 400; }
+
+  /* Tracking per spec: Headline Poppins Bold with -10 tracking (~ -0.01em) */
+  .tracking--10 { letter-spacing: -0.01em; }
+
+  /* Semantic color shorthands (helps purge hexes) */
+  .text-ink { color: var(--brand-ink); }
+  .bg-ink { background-color: var(--brand-ink); }
+  .text-primary { color: var(--brand-primary); }
+  .bg-primary { background-color: var(--brand-primary); }
+  .border-primary { border-color: var(--brand-primary); }
 }
