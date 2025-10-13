@@ -96,7 +96,7 @@ export default function InteractivePestAnatomy() {
             <Card className="border-2 border-accent/20 bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
               <CardHeader className="text-center">
                 <CardTitle className="flex items-center justify-center gap-2">
-                  <Bug className="w-6 h-6 text-accent" />
+                  <Bug className="w-6 h-6 text-primary" />
                   Interactive Pest Anatomy
                 </CardTitle>
               </CardHeader>
