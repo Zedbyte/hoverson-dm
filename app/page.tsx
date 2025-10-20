@@ -26,6 +26,7 @@ export default function HoversonPestControl() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
   const services = [
     {
@@ -91,28 +92,51 @@ export default function HoversonPestControl() {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + services.length) % services.length)
 
   const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitSuccess(false);
+    setErrorMsg("");
 
-    console.log("[v0] Form submitted:", formData)
+    try {
+      // if you add a honeypot field (_gotcha) below, block bots here
+      const target = e.target as HTMLFormElement;
+      const data = Object.fromEntries(new FormData(target).entries());
 
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+      const res = await fetch("https://formspree.io/f/movkbkzv", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",     // <-- Important for JSON response
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    setIsSubmitting(false)
-    setSubmitSuccess(true)
-
-    setTimeout(() => {
-      setSubmitSuccess(false)
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        propertyType: "Residential Home",
-        message: "",
-      })
-    }, 3000)
-  }
+      if (res.ok) {
+        setSubmitSuccess(true);
+        target.reset(); // clears native inputs
+        // also clear React state mirrors
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          propertyType: "Residential Home",
+          message: "",
+        });
+      } else {
+        const payload = await res.json().catch(() => ({} as any));
+        const apiMsg =
+          (payload as any)?.errors?.[0]?.message ||
+          (payload as any)?.message ||
+          "Submission failed. Please try again.";
+        setErrorMsg(apiMsg);
+      }
+    } catch {
+      setErrorMsg("Network error. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({

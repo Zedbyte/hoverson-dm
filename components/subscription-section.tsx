@@ -7,18 +7,55 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 
+// Use a separate Formspree form if you want to keep newsletter
+// submissions apart from quote requests. For now you can reuse the same ID.
+const NEWSLETTER_FORM_ID = "movkbkzv" // replace with your dedicated newsletter form ID if you create one
+
 export default function SubscriptionSection() {
   const [email, setEmail] = useState("")
   const [isSubscribed, setIsSubscribed] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string>("")
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log("[v0] Subscription email:", email)
-    setIsSubscribed(true)
-    setTimeout(() => {
-      setIsSubscribed(false)
-      setEmail("")
-    }, 3000)
+    setIsSubmitting(true)
+    setIsSubscribed(false)
+    setErrorMsg("")
+
+    const form = e.currentTarget
+    const data = Object.fromEntries(new FormData(form).entries())
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${NEWSLETTER_FORM_ID}`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",          // important for JSON response
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          formName: "Newsletter Subscription",   // helpful label in Formspree inbox
+        }),
+      })
+
+      if (res.ok) {
+        setIsSubscribed(true)
+        form.reset()
+        setEmail("")
+      } else {
+        const payload = await res.json().catch(() => ({} as any))
+        const apiMsg =
+          (payload as any)?.errors?.[0]?.message ||
+          (payload as any)?.message ||
+          "Subscription failed. Please try again."
+        setErrorMsg(apiMsg)
+      }
+    } catch {
+      setErrorMsg("Network error. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -40,18 +77,36 @@ export default function SubscriptionSection() {
               <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
                 <Input
                   type="email"
+                  name="email"                          // <-- Formspree needs a named field
                   placeholder="Enter your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="flex-1 bg-white border-2 border-[#0E61AE]/20 font-body text-[#151248] placeholder:text-[#151248]/50"
                 />
+
+                {/* Honeypot to reduce bot spam */}
+                <input
+                  type="text"
+                  name="_gotcha"
+                  style={{ display: "none" }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+
                 <Button
                   type="submit"
+                  disabled={isSubmitting}
                   className="bg-[#0E61AE] text-white hover:bg-[#151248] font-sub px-8 whitespace-nowrap"
                 >
-                  Subscribe Now
+                  {isSubmitting ? "Submitting..." : "Subscribe Now"}
                 </Button>
+
+                {errorMsg && (
+                  <p role="alert" className="sm:col-span-2 text-red-600 text-sm font-body">
+                    {errorMsg}
+                  </p>
+                )}
               </form>
             ) : (
               <div className="flex items-center justify-center gap-3 text-[#0E61AE]">
