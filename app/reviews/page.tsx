@@ -1,109 +1,90 @@
 "use client"
 
-import Script from "next/script"
-import { useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { useState, useEffect } from "react"
+import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import Navigation from "@/components/navigation"
 import { useRouter } from "next/navigation"
 
-export default function HoversonHome() {
+export default function ReviewsPage() {
   const router = useRouter()
+  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+
+  const testimonials = [
+    {
+      name: "Sarah Johnson",
+      location: "Residential Customer",
+      rating: 5,
+      text: "Hoverson completely eliminated our termite problem. Professional, thorough, and reliable service. Highly recommend!",
+    },
+    {
+      name: "Mike Chen",
+      location: "Restaurant Owner",
+      rating: 5,
+      text: "They've been managing pest control for our restaurant chain for 3 years. Always responsive and effective.",
+    },
+    {
+      name: "Lisa Rodriguez",
+      location: "Property Manager",
+      rating: 5,
+      text: "Outstanding service for our apartment complex. Tenants are happy and pest-free. Great communication throughout.",
+    },
+  ]
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            window.gtag?.("event", "view_homepage")
-          }
-        })
-      },
-      { threshold: 0.5 },
-    )
-
-    const heroSection = document.getElementById("hero")
-    if (heroSection) {
-      observer.observe(heroSection)
-    }
-
-    return () => observer.disconnect()
+    window.gtag?.("event", "view_reviewspage")
   }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [testimonials.length])
 
   return (
     <div className="min-h-screen bg-white">
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-8PDDZ885XE" strategy="afterInteractive" />
-      <Script
-        id="google-analytics"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-8PDDZ885XE');
-          `,
-        }}
-      />
-
       <Navigation />
 
-      <section id="hero" className="relative bg-[#0E61AE]">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-40">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-10">
-              <div className="space-y-8">
-                <Badge variant="secondary" className="text-sm font-sub bg-white text-[#0E61AE] border-0 px-6 py-2">
-                  Licensed & Certified Professionals
-                </Badge>
-                <div className="space-y-4">
-                  <h1 className="text-6xl lg:text-7xl font-wordmark text-white leading-none tracking-tight">
-                    HOVERSON
-                  </h1>
-                  <p className="text-3xl lg:text-4xl font-subtitle text-white">Trading & Pest Control Services</p>
+      <section className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <h1 className="text-5xl lg:text-6xl font-headline text-[#151248] mb-6 tracking-tight">
+              What Our Customers Say
+            </h1>
+            <p className="text-xl font-body text-[#151248]/70 leading-relaxed">
+              Don't just take our word for it - hear from satisfied customers
+            </p>
+          </div>
+
+          <div className="relative">
+            <Card className="border-2 border-[#0E61AE]/20 hover:shadow-2xl transition-all duration-300 rounded-3xl overflow-hidden">
+              <CardContent className="p-12 md:p-16 text-center bg-white">
+                <div className="flex justify-center mb-6 text-3xl text-[#0E61AE]">
+                  {"★".repeat(testimonials[currentTestimonial].rating)}
                 </div>
-                <p className="text-2xl font-headline text-white italic leading-relaxed">
-                  "Puts pests in their place not your place"
-                </p>
-                <p className="text-lg font-body text-white/90 max-w-xl leading-relaxed">
-                  Professional pest control services you can trust. Licensed fumigator and exterminator with years of
-                  experience protecting homes and businesses across Pampanga.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  className="text-lg px-10 py-7 font-sub bg-white text-[#0E61AE] hover:bg-[#151248] hover:text-white border-0 transition-all duration-300"
+                <blockquote className="text-2xl font-body text-[#151248] mb-8 italic leading-relaxed">
+                  "{testimonials[currentTestimonial].text}"
+                </blockquote>
+                <div>
+                  <div className="font-sub text-[#151248] text-xl mb-1">{testimonials[currentTestimonial].name}</div>
+                  <div className="font-body text-[#151248]/70 text-lg">{testimonials[currentTestimonial].location}</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="flex justify-center mt-10 space-x-3">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${index === currentTestimonial ? "bg-[#0E61AE] w-12" : "bg-[#0E61AE]/30 w-2.5 hover:bg-[#0E61AE]/50"}`}
                   onClick={() => {
-                    window.gtag?.("event", "click_get_quote")
-                    router.push("/contact")
+                    setCurrentTestimonial(index)
+                    window.gtag?.("event", "click_testimonial", { testimonial_index: index })
                   }}
-                >
-                  Get Free Quote
-                </Button>
-                <a href="tel:+639774240418" className="w-full sm:w-auto">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full text-lg px-10 py-7 font-sub border-2 border-white text-white hover:bg-white hover:text-[#0E61AE] bg-transparent transition-all duration-300"
-                    onClick={() => window.gtag?.("event", "click_call_button")}
-                  >
-                    0977 424 0418
-                  </Button>
-                </a>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-4 border-2 border-white/20">
-                <Image
-                  src="/images/hoverson-logo.png"
-                  alt="Professional Pest Control Service"
-                  width={600}
-                  height={500}
-                  className="rounded-2xl w-full h-auto"
+                  aria-label={`Go to testimonial ${index + 1}`}
                 />
-              </div>
+              ))}
             </div>
           </div>
         </div>
