@@ -33,7 +33,10 @@ export default function HoversonHome() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-8PDDZ885XE" strategy="afterInteractive" />
+      <Script 
+        src="https://www.googletagmanager.com/gtag/js?id=G-8PDDZ885XE" 
+        strategy="afterInteractive"
+      />
       <Script
         id="google-analytics"
         strategy="afterInteractive"
@@ -42,7 +45,9 @@ export default function HoversonHome() {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-8PDDZ885XE');
+            gtag('config', 'G-8PDDZ885XE', {
+              page_path: window.location.pathname,
+            });
           `,
         }}
       />
@@ -87,7 +92,9 @@ export default function HoversonHome() {
                     size="lg"
                     variant="outline"
                     className="w-full text-lg px-10 py-7 font-sub border-2 border-white text-white hover:bg-white hover:text-[#0E61AE] bg-transparent transition-all duration-300"
-                    onClick={() => window.gtag?.("event", "click_call_button")}
+                    onClick={() => {
+                      window.gtag?.("event", "click_call_button")
+                    }}
                   >
                     0977 424 0418
                   </Button>
@@ -109,6 +116,7 @@ export default function HoversonHome() {
         </div>
       </section>
 
+      {/* ...existing footer code... */}
       <footer className="bg-[#151248] text-white py-16 border-t-4 border-[#0E61AE]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-12">

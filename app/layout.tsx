@@ -3,6 +3,17 @@ import type { Metadata } from "next"
 import "./globals.css"
 import localFont from "next/font/local"
 
+declare global {
+  interface Window {
+    gtag: (
+      command: 'config' | 'event' | 'js' | 'set',
+      targetId: string | Date,
+      config?: Record<string, any>
+    ) => void
+    dataLayer: any[]
+  }
+}
+
 const poppinsRegular = localFont({
   src: "../public/fonts/Poppins-Regular.ttf",
   weight: "400",
