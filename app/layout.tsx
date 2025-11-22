@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import localFont from "next/font/local"
+import Script from "next/script"
 
 declare global {
   interface Window {
@@ -31,7 +32,6 @@ const poppinsSemi = localFont({
 })
 
 const poppinsBold = localFont({
-  // ⛔ You pointed this at Century Gothic — switch to Poppins-Bold
   src: "../public/fonts/Poppins-Bold.ttf",
   weight: "700",
   style: "normal",
@@ -82,7 +82,29 @@ export default function RootLayout({
           poppinsBold.variable,
           ethnocentric.variable,
           centuryGothic.variable,
-        ].join(" ")}>{children}</body>
+        ].join(" ")}>
+        
+        <Script 
+          src="https://www.googletagmanager.com/gtag/js?id=G-8PDDZ885XE" 
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-8PDDZ885XE', {
+                page_path: window.location.pathname
+              });
+            `,
+          }}
+        />
+        
+        {children}
+      </body>
     </html>
   )
 }

@@ -33,25 +33,6 @@ export default function HoversonHome() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Script 
-        src="https://www.googletagmanager.com/gtag/js?id=G-8PDDZ885XE" 
-        strategy="afterInteractive"
-      />
-      <Script
-        id="google-analytics"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-8PDDZ885XE', {
-              page_path: window.location.pathname,
-            });
-          `,
-        }}
-      />
-
       <Navigation />
 
       <section id="hero" className="relative bg-[#0E61AE]">
