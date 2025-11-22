@@ -7,9 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 
-// Use a separate Formspree form if you want to keep newsletter
-// submissions apart from quote requests. For now you can reuse the same ID.
-const NEWSLETTER_FORM_ID = "movkbkzv" // replace with your dedicated newsletter form ID if you create one
+// Mailchimp endpoint from your embedded form
+const MAILCHIMP_URL = "https://gmail.us10.list-manage.com/subscribe/post?u=4ff187d69782b8b74857614c1&id=c2901020a0&f_id=007649e4f0"
 
 export default function SubscriptionSection() {
   const [email, setEmail] = useState("")
@@ -23,36 +22,57 @@ export default function SubscriptionSection() {
     setIsSubscribed(false)
     setErrorMsg("")
 
-    const form = e.currentTarget
-    const data = Object.fromEntries(new FormData(form).entries())
-
     try {
-      const res = await fetch(`https://formspree.io/f/${NEWSLETTER_FORM_ID}`, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",          // important for JSON response
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-          formName: "Newsletter Subscription",   // helpful label in Formspree inbox
-        }),
+      // Mailchimp requires form-urlencoded submission
+      const formData = new FormData()
+      formData.append("EMAIL", email)
+      // Add honeypot field to prevent bots
+      formData.append("b_4ff187d69782b8b74857614c1_c2901020a0", "")
+
+      // Use JSONP approach to avoid CORS issues with Mailchimp
+      const urlParams = new URLSearchParams()
+      urlParams.append("EMAIL", email)
+      urlParams.append("b_4ff187d69782b8b74857614c1_c2901020a0", "")
+
+      // Mailchimp's subscribe endpoint with JSONP callback
+      const jsonpUrl = MAILCHIMP_URL.replace("/post?", "/post-json?") + `&${urlParams.toString()}&c=__callback`
+
+      // Create a script tag for JSONP
+      await new Promise<void>((resolve, reject) => {
+        const script = document.createElement("script")
+        const callbackName = `mailchimp_callback_${Date.now()}`
+
+        // @ts-ignore
+        window[callbackName] = (data: any) => {
+          // @ts-ignore
+          delete window[callbackName]
+          document.body.removeChild(script)
+
+          if (data.result === "success") {
+            resolve()
+          } else {
+            reject(new Error(data.msg || "Subscription failed"))
+          }
+        }
+
+        script.src = jsonpUrl.replace("__callback", callbackName)
+        script.onerror = () => {
+          // @ts-ignore
+          delete window[callbackName]
+          document.body.removeChild(script)
+          reject(new Error("Network error"))
+        }
+
+        document.body.appendChild(script)
       })
 
-      if (res.ok) {
-        setIsSubscribed(true)
-        form.reset()
-        setEmail("")
-      } else {
-        const payload = await res.json().catch(() => ({} as any))
-        const apiMsg =
-          (payload as any)?.errors?.[0]?.message ||
-          (payload as any)?.message ||
-          "Subscription failed. Please try again."
-        setErrorMsg(apiMsg)
-      }
-    } catch {
-      setErrorMsg("Network error. Please try again.")
+      setIsSubscribed(true)
+      setEmail("")
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Subscription failed. Please try again."
+      // Clean up Mailchimp's HTML error messages
+      const cleanMessage = errorMessage.replace(/<[^>]*>/g, "").replace(/^\d+\s*-\s*/, "")
+      setErrorMsg(cleanMessage)
     } finally {
       setIsSubmitting(false)
     }
