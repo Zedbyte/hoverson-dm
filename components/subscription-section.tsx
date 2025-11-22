@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 
-// Mailchimp endpoint from your embedded form
+// Mailchimp endpoint
 const MAILCHIMP_URL = "https://gmail.us10.list-manage.com/subscribe/post?u=4ff187d69782b8b74857614c1&id=c2901020a0&f_id=007649e4f0"
 
 export default function SubscriptionSection() {
