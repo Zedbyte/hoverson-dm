@@ -2,7 +2,6 @@ import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import localFont from "next/font/local"
-import Script from "next/script"
 
 declare global {
   interface Window {
@@ -75,22 +74,10 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.cdnfonts.com/css/ethnocentric" rel="stylesheet" />
         <link href="https://fonts.cdnfonts.com/css/century-gothic" rel="stylesheet" />
-      </head>
-      <body className={[
-          poppinsRegular.variable,
-          poppinsSemi.variable,
-          poppinsBold.variable,
-          ethnocentric.variable,
-          centuryGothic.variable,
-        ].join(" ")}>
         
-        <Script 
-          src="https://www.googletagmanager.com/gtag/js?id=G-8PDDZ885XE" 
-          strategy="afterInteractive"
-        />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PDDZ885XE"></script>
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
@@ -102,7 +89,14 @@ export default function RootLayout({
             `,
           }}
         />
-        
+      </head>
+      <body className={[
+          poppinsRegular.variable,
+          poppinsSemi.variable,
+          poppinsBold.variable,
+          ethnocentric.variable,
+          centuryGothic.variable,
+        ].join(" ")}>
         {children}
       </body>
     </html>
