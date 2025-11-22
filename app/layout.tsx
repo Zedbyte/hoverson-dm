@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import localFont from "next/font/local"
+import { Analytics } from "@/components/analytics"
 
 declare global {
   interface Window {
@@ -75,7 +76,7 @@ export default function RootLayout({
         <link href="https://fonts.cdnfonts.com/css/ethnocentric" rel="stylesheet" />
         <link href="https://fonts.cdnfonts.com/css/century-gothic" rel="stylesheet" />
         
-        {/* Google Analytics */}
+        {/* Global Site Tag (gtag.js) - Google Analytics */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PDDZ885XE"></script>
         <script
           dangerouslySetInnerHTML={{
@@ -84,7 +85,9 @@ export default function RootLayout({
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'G-8PDDZ885XE', {
-                page_path: window.location.pathname
+                page_path: window.location.pathname,
+                send_page_view: true,
+                debug_mode: false
               });
             `,
           }}
@@ -97,6 +100,7 @@ export default function RootLayout({
           ethnocentric.variable,
           centuryGothic.variable,
         ].join(" ")}>
+        <Analytics />
         {children}
       </body>
     </html>

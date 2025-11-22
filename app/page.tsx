@@ -1,12 +1,12 @@
 "use client"
 
-import Script from "next/script"
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import Navigation from "@/components/navigation"
 import { useRouter } from "next/navigation"
+import * as gtag from "@/lib/gtag"
 
 export default function HoversonHome() {
   const router = useRouter()
@@ -16,7 +16,7 @@ export default function HoversonHome() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            window.gtag?.("event", "view_homepage")
+            gtag.event('view_homepage')
           }
         })
       },
@@ -62,7 +62,7 @@ export default function HoversonHome() {
                   size="lg"
                   className="text-lg px-10 py-7 font-sub bg-white text-[#0E61AE] hover:bg-[#151248] hover:text-white border-0 transition-all duration-300"
                   onClick={() => {
-                    window.gtag?.("event", "click_get_quote")
+                    gtag.event('click_get_quote')
                     router.push("/contact")
                   }}
                 >
@@ -74,7 +74,7 @@ export default function HoversonHome() {
                     variant="outline"
                     className="w-full text-lg px-10 py-7 font-sub border-2 border-white text-white hover:bg-white hover:text-[#0E61AE] bg-transparent transition-all duration-300"
                     onClick={() => {
-                      window.gtag?.("event", "click_call_button")
+                      gtag.event('click_call_button')
                     }}
                   >
                     0977 424 0418
@@ -86,7 +86,7 @@ export default function HoversonHome() {
               <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-4 border-2 border-white/20">
                 <Image
                   src="/images/hoverson-logo.png"
-                  alt="Professional Pest Control Service"
+                  alt="Hoverson Pest Control Services Logo"
                   width={600}
                   height={500}
                   className="rounded-2xl w-full h-auto"
